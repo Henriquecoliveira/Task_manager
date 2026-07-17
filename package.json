@@ -1,0 +1,34 @@
+{
+  "name": "task_manager",
+  "version": "1.0.0",
+  "description": " A task system using Node.js, Express (with rate limiting and role-based-access-control), JWT authentication, and MySQL2.",
+  "keywords": [
+    "JWT",
+    "Express",
+    "MySQL",
+    "bcrypt"
+  ],
+  "homepage": "https://github.com/Henriquecoliveira/Task_manager#readme",
+  "bugs": {
+    "url": "https://github.com/Henriquecoliveira/Task_manager/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Henriquecoliveira/Task_manager.git"
+  },
+  "license": "ISC",
+  "author": "Henriquecoliveira",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.23.0"
+  }
+}
