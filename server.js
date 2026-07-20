@@ -11,7 +11,10 @@ app.use(express.json());
 
 //routes
 const userRoute = require("./src/router/user.js");
-app.use("/api", userRoute);
+app.use("/api/user", userRoute);
+
+const groupRoute = require("./src/router/group.js");
+app.use("/api/group", groupRoute);
 
 app.listen(process.env.PORT, () => {
   console.log("Server running");
