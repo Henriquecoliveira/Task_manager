@@ -37,6 +37,7 @@ CREATE TABLE tasks (
     description VARCHAR(255),
     `group` INT,
     register_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    author VARCHAR(100) NOT NULL,
     PRIMARY KEY(id),
     CONSTRAINT fk_tasks_groups
 		FOREIGN KEY (`group`)
@@ -49,6 +50,7 @@ CREATE TABLE tasks_steps (
     step INT NOT NULL,
     description VARCHAR(255) NOT NULL,
     status VARCHAR(10) NOT NULL,
+    author VARCHAR(100) NOT NULL,
     PRIMARY KEY(task_id, step),
     CONSTRAINT fk_tasks_steps_tasks
 		FOREIGN KEY (task_id)
