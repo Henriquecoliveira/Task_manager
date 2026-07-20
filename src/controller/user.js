@@ -77,7 +77,6 @@ const user = {
                 sameSite: "strict",
                 maxAge: 360000,
                 path: "/api"
-
             })
 
             return res.status(200).json({body: userObj, message: "User sucefully logged in"});
@@ -89,7 +88,7 @@ const user = {
     getUsers: async (req,res) => {
         try {
             const [rows] = await connection.execute(`
-                SELECT name
+                SELECT email, name
                 FROM users;
                 `);
 
