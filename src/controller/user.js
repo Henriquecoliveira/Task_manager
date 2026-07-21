@@ -105,9 +105,11 @@ const user = {
         };
 
         const query = `
-        SELECT *
-        FROM \`groups_members\`
-        WHERE member = ?;
+        SELECT \`groups\`.id, \`groups\`.name, \`groups_members\`.role_in_the_group
+        FROM \`groups\` 
+            INNER JOIN \`groups_members\`
+            ON \`groups\`.id = \`groups_members\`.group_id
+        WHERE \`groups_members\`.member = ?;
         `;
 
         try {
