@@ -10,18 +10,29 @@ const group = {
             return res.status(400).json({error: "Email not identified in token subject"});
         };
 
+        const {name} = req?.body;
+        const regex = /^[A-Za-zÀ-ÖØ-öø-ÿ'\s-]{2,50}$/;
+        if(!regex.test(name)) {
+            return res.status(400).json({error: "Invalid group's name"});
+        };
+
         //business logic
         const isolatedConnection = await connection.getConnection();
         await isolatedConnection.beginTransaction();
 
         try {
             //creating a new group and a leader
-            const [rowInsert] = await isolatedConnection.execute("INSERT INTO `groups` (id) VALUES (DEFAULT);");
-            const queryInsert = `
-            INSERT INTO groups_members (group_id, member, role_in_the_group)
+            const queryInsertGroups = `
+            INSERT INTO \`groups\` (id, name) 
+            VALUES (DEFAULT, ?);
+            `;
+            const [rowInsert] = await isolatedConnection.execute(queryInsertGroups, [name || null]);
+            
+            const queryInsertGroupsMembers = `
+            INSERT INTO \`groups_members\` (group_id, member, role_in_the_group)
             VALUES (?, ?, ?);
             `;
-            await isolatedConnection.execute(queryInsert, [rowInsert.insertId, email, "leader"]);
+            await isolatedConnection.execute(queryInsertGroupsMembers, [rowInsert.insertId, email, "leader"]);
             isolatedConnection.commit();
 
             //members...
