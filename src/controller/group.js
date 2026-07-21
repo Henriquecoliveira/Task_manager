@@ -1,8 +1,9 @@
 const connection = require("../config/database.js");
+const member = require("../controller/member.js");
 const jwt = require("jsonwebtoken");
 
 const group = {
-    newGroup: async (req, res) => {
+    create: async (req, res) => {
         //getting data
         const email = req.token.sub;
         if(!email) {
@@ -27,8 +28,8 @@ const group = {
             const {members} = req?.body;
 
             if(members) {
-                req.body.group_id = rowInsert.insertId;
-                await group.addMembers(req, res);
+                req.params.group_id = rowInsert.insertId;
+                await member.addMembers(req, res);
             } else {
                 return res.status(201).json({message: `Group #${rowInsert.insertId} created`});
             }
@@ -40,65 +41,25 @@ const group = {
             isolatedConnection.release();
         }
     },
-    addMembers: async (req, res) => {
-        //getting data
-        const {members, group_id} = req.body;
-        
-        //verifying if members arrived with correct data type
-        if(!members || !Array.isArray(members) || !members.length > 0) {
-            return res.status(400).json({body: [{members: members}, {group_id: group_id}], error: "Invalid members data"});
+    delete: async (req, res) => {
+        const {group_id} = req?.params;
+        if(!group_id) {
+            return res.status(400).json({error: "Undefined group_id"});
         };
 
-        if(!group_id || isNaN(group_id)) {
-            return res.status(400).json({body: [{members: members}, {group_id: group_id}], error: "Invalid group_id data"});
-        };
-
-        //query for verify if have the user email in the database
-        const querySelect = `
-        SELECT email
-        FROM users
-        WHERE email = ?;
-        `;
-
-        //query for input the member in the group
-        const queryInsert = `
-        INSERT INTO groups_members (group_id, member, role_in_the_group)
-        VALUES (?, ?, ?);
-        `;
-
-        const isolatedConnection = await connection.getConnection();
-        await isolatedConnection.beginTransaction();
-
-        
         try {
-            let validRoles = ["leader", "sub-leader", "member"];
-            for(let i = 0; i < members.length; i++) {
-                //veriffying every member in the database
-                let [rowSelect] = await isolatedConnection.execute(querySelect, [members[i].email]);
+            const queryDelete = `
+            DELETE FROM \`groups_members\`
+            WHERE group_id = ?;
+            `;
+            await connection.execute(queryDelete, [group_id]);
 
-                //if rowSelect does not returns a row...
-                if(rowSelect.length === 0) {
-                    return res.status(400).json({body: members, error: `${members[i].email} not identified`});
-                };
-
-                //verifying the roles inputeds in members object
-                if(!validRoles.includes(members[i].role_in_the_group)) {
-                    return res.status(400).json({body: members, error: `${members[i].email} role_in_the_group's undefined`});
-                }
-
-                //inputting in the database
-                await isolatedConnection.execute(queryInsert, [group_id, members[i].email, members[i].role_in_the_group]);
-            }
-            isolatedConnection.commit();
-            return res.status(201).json({body: [{group_id: group_id}, {members: members}], message: "Members added successfully"});
+            return res.status(200).json({body: {group_id: group_id}, message: "Group deleted suceffuly"});
         } catch (err) {
-            isolatedConnection.rollback();
             console.error(err);
             return res.status(500).json({error: "Server error"});
-        } finally {
-            isolatedConnection.release();
         }
     }
-}
+};
 
 module.exports = group;

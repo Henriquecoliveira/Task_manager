@@ -97,7 +97,27 @@ const user = {
             console.error(err);
             return res.status(500).json({error: "Server error"});
         }
+    },
+    getGroups: async (req, res) => {
+        const email = req?.token?.sub;
+        if(!email) {
+            return res.status(400).json({error: "Undefined email"});
+        };
+
+        const query = `
+        SELECT *
+        FROM \`groups_members\`
+        WHERE member = ?;
+        `;
+
+        try {
+            const [rows] = await connection.execute(query, [email]);
+            return res.status(200).json({body: rows});
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({error: "Server error"});
+        }
     }
 }
 
-module.exports = {user};
+module.exports = user;

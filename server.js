@@ -16,6 +16,9 @@ app.use("/api/user", userRoute);
 const groupRoute = require("./src/router/group.js");
 app.use("/api/group", groupRoute);
 
+const memberRoute = require("./src/router/member.js");
+app.use("/api/member", memberRoute);
+
 app.listen(process.env.PORT, () => {
   console.log("Server running");
 });
