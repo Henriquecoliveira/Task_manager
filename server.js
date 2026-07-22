@@ -19,6 +19,9 @@ app.use("/api/group", groupRoute);
 const memberRoute = require("./src/router/member.js");
 app.use("/api/member", memberRoute);
 
+const taskRoute = require("./src/router/task.js");
+app.use("/api/task", taskRoute);
+
 app.listen(process.env.PORT, () => {
   console.log("Server running");
 });
