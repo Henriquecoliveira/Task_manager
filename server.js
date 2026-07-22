@@ -22,6 +22,9 @@ app.use("/api/member", memberRoute);
 const taskRoute = require("./src/router/task.js");
 app.use("/api/task", taskRoute);
 
+const taskStepRoute = require("./src/router/task_step.js");
+app.use("/api/task_step", taskStepRoute);
+
 app.listen(process.env.PORT, () => {
   console.log("Server running");
 });

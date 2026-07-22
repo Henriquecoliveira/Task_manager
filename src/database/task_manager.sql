@@ -16,6 +16,8 @@ CREATE TABLE `groups` (
         name VARCHAR(50),
         PRIMARY KEY(id)  
         );
+        
+SELECT * FROM `groups_members`;
 
 CREATE TABLE groups_members (
 		group_id INT NOT NULL,
@@ -59,11 +61,11 @@ CREATE TABLE tasks (
         
 CREATE TABLE tasks_steps (
 	task_id INT NOT NULL,
-    step INT NOT NULL,
-    description VARCHAR(255) NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    description VARCHAR(255),
     status VARCHAR(10) NOT NULL,
     author_email VARCHAR(100) NOT NULL,
-    PRIMARY KEY(task_id, step),
+    PRIMARY KEY(task_id, title),
     CONSTRAINT fk_tasks_steps_tasks
 		FOREIGN KEY (task_id)
         REFERENCES tasks(id)
