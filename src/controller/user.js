@@ -1,6 +1,7 @@
 const connection = require("../config/database.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const {generate} = require("../middleware/auth.js");
 
 const user = {
     signUp: async (req, res) => {
@@ -69,16 +70,10 @@ const user = {
             //JWT
             payload = {
                 sub: rows[0].email,
-                role: rows[0].role
+                role: rows[0].role,
             }
-            const token = jwt.sign(payload, process.env.JWT_KEY, {"expiresIn": "1hr", "algorithm": "HS256"});
-            res.cookie("auth_token", token, {
-                httpsOnly: true,
-                sameSite: "strict",
-                maxAge: 360000,
-                path: "/api"
-            })
-
+            generate.token(payload, res);
+            
             return res.status(200).json({body: userObj, message: "User sucefully logged in"});
         } catch (err) {
             console.error(err);

@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const group = require("../controller/group.js");
-const tokenVerify = require("../middleware/auth.js");
+const auth = require("../middleware/auth.js");
 const authorization = require("../middleware/authorization.js");
 
-router.post("/", tokenVerify, group.create);
+router.post("/", auth.verify.token, group.create);
 
-router.delete("/:group_id", tokenVerify, authorization.leader, group.delete);
+router.delete("/:group_id", auth.verify.token, authorization.leader, group.delete);
 
 module.exports = router;
